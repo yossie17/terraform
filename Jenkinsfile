@@ -18,6 +18,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'terraform -v'
+                sh 'ls -la'
                 
             }
         }

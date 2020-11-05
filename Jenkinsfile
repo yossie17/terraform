@@ -8,7 +8,6 @@ pipeline {
                 sh 'hostname'
                 sh 'mkdir /root/.aws/'
                 sh 'envsubst  < credentials.template > /root/.aws/credentials'
-                sh 'cat /root/.aws/credentials'
             }
         }
         

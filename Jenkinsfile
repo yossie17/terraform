@@ -15,7 +15,8 @@ pipeline {
             steps {
                 sh 'hostname'
                 sh 'terraform -v'
-                sh 'ls -la'
+                sh 'terraform init
+'
             }
         }
     }

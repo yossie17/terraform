@@ -6,8 +6,8 @@ pipeline {
         stage('AWS-Credentials') {
             steps {
                 sh 'hostname'
-                sh 'envsubst  < credentials.template > credentials'
-                sh 'cat credentials'
+                sh 'envsubst  < credentials.template > /root/.aws/credentials'
+                sh 'cat /root/.aws/credentials'
             }
         }
         

@@ -1,3 +1,3 @@
 FROM hashicorp/terraform
 
-CMD [ "sh" ]
+CMD tail /dev/null

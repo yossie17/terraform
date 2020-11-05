@@ -7,7 +7,7 @@ pipeline {
             steps {
                 sh 'hostname'
                 sh 'envsubst  < credentials.template > credentials'
-                sh 'echo credentials'
+                sh 'cat credentials'
             }
         }
         

@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker { image 'yossie17/terratorm:v1'}
+        docker { image 'yossie17/terratorm:v2'}
     }
     stages {
         stage('AWS-Credentials') {

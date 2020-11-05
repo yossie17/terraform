@@ -1,6 +1,6 @@
 FROM ubuntu
 
-RUN apt update && apt install curl zip tar git jp wget -y
+RUN apt update && apt install curl zip tar git jp wget gettext-base -y
 RUN curl -o /tmp/terraform.zip -LO https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip
 RUN unzip /tmp/terraform.zip
 RUN chmod +x terraform && mv terraform /usr/local/bin/terraform

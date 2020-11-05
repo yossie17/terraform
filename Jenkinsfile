@@ -3,6 +3,14 @@ pipeline {
         docker { image 'yossie17/terratorm:v1'}
     }
     stages {
+        stage('AWS-Credentials') {
+            steps {
+                sh 'hostname'
+                sh 'envsubst  < credentials.template > credentials'
+                sh 'echo credentials'
+            }
+        }
+        
         stage('Test') {
             steps {
                 sh 'hostname'

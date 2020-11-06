@@ -17,7 +17,7 @@ pipeline {
                 sh 'terraform -v'
                 sh 'terraform init amazon/terraform'
                 sh 'terraform plan amazon/terraform'
-                sh 'ping 8.8.8.8'
+                // sh 'ping 8.8.8.8'
 
             }
         }

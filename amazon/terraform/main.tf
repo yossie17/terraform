@@ -75,20 +75,20 @@ module "vpc" {
 }
 
 module "eks" {
-  source       = "terraform-aws-modules/eks/aws"
+  source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
   cluster_version = "1.17"
+  vpc_id          = module.vpc.vpc_id
   subnets         = module.vpc.private_subnets
-  version = "12.2.0"
+  version         = "12.2.0"
   cluster_create_timeout = "1h"
   cluster_endpoint_private_access = true 
-
-  vpc_id = module.vpc.vpc_id
 
   worker_groups = [
     {
       name                          = "worker-group-1"
-      instance_type                 = "t2.micro"
+      instance_type                 = "t2.small"
+      # instance_type                 = "t2.micro"
       additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 1
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
@@ -101,14 +101,6 @@ module "eks" {
   map_accounts                         = var.map_accounts
 }
 
-# module "ecr" {
-#   source                 = "git::https://github.com/cloudposse/terraform-aws-ecr.git?ref=master"
-#   namespace              = "eg"
-#   stage                  = "test"
-#   name                   = "ecr"
-#   principals_full_access = [data.aws_iam_role.ecr.arn]
-# }
-
 
 
 provider "kubernetes" {
@@ -119,64 +111,74 @@ provider "kubernetes" {
   version                = "~> 1.11"
 }
 
-resource "kubernetes_deployment" "example" {
-  metadata {
-    name = "terraform-example"
-    labels = {
-      test = "MyExampleApp"
-    }
-  }
 
-  spec {
-    replicas = 2
-
-    selector {
-      match_labels = {
-        test = "MyExampleApp"
-      }
-    }
-
-    template {
-      metadata {
-        labels = {
-          test = "MyExampleApp"
-        }
-      }
-
-      spec {
-        container {
-          image = "nginx:1.7.8"
-          name  = "example"
-
-          resources {
-            limits {
-              cpu    = "0.5"
-              memory = "512Mi"
-            }
-            requests {
-              cpu    = "250m"
-              memory = "50Mi"
-            }
-          }
-        }
-      }
-    }
-  }
+  module "ecr" {
+    source      = "git::https://github.com/clouddrove/terraform-aws-ecr.git?ref=tags/0.12.2"
+    name        = "ecr"
+    application = "clouddrove"
+    environment = "test"
+    label_order = ["environment", "application", "name"]
 }
 
-resource "kubernetes_service" "example" {
-  metadata {
-    name = "terraform-example"
-  }
-  spec {
-    selector = {
-      test = "MyExampleApp"
-    }
-    port {
-      port        = 80
-      target_port = 80
-    }
+# resource "kubernetes_deployment" "example" {
+#   metadata {
+#     name = "terraform-example"
+#     labels = {
+#       test = "MyExampleApp"
+#     }
+#   }
 
-    type = "LoadBalancer"
-  }
-}
+#   spec {
+#     replicas = 2
+
+#     selector {
+#       match_labels = {
+#         test = "MyExampleApp"
+#       }
+#     }
+
+#     template {
+#       metadata {
+#         labels = {
+#           test = "MyExampleApp"
+#         }
+#       }
+
+#       spec {
+#         container {
+#           image = "nginx:1.7.8"
+#           # image = "770255773224.dkr.ecr.eu-central-1.amazonaws.com/test-clouddrove-ecr:ngnix"
+#           name  = "example"
+
+#           resources {
+#             limits {
+#               cpu    = "0.5"
+#               memory = "512Mi"
+#             }
+#             requests {
+#               cpu    = "250m"
+#               memory = "50Mi"
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+
+# resource "kubernetes_service" "example" {
+#   metadata {
+#     name = "terraform-example"
+#   }
+#   spec {
+#     selector = {
+#       test = "MyExampleApp"
+#     }
+#     port {
+#       port        = 80
+#       target_port = 80
+#     }
+
+#     type = "LoadBalancer"
+#   }
+# }
